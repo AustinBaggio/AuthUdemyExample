@@ -41,6 +41,7 @@ class LoginForm extends Component {
     });
   }
 
+//handling showing user content, using state changes
   renderButton() {
     if (this.state.loading) {
       return <Spinner size="small" />;
@@ -60,6 +61,7 @@ class LoginForm extends Component {
       <Card>
         <CardSection>
           <Input
+            //lets users type, then we pull the imput * Controlled Components *
             placeholder="user@gmail.com"
             label="Email"
             value={this.state.email}
