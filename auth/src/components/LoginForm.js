@@ -7,7 +7,7 @@ class LoginForm extends Component {
   //state is used to rerender
   state = { email: '', password: '', error: '', loading: false };
 
-  onButtonPress() {
+  onLoginPress() {
     const { email, password } = this.state;
 
     this.setState({ error: '', loading: true });
@@ -17,17 +17,30 @@ class LoginForm extends Component {
     //success
       .then(this.onLoginSuccess.bind(this))
       //fail
-      .catch(() => {
+      .catch(this.onLoginFail.bind(this));
+  }
+
+  onRegisterPress() {
+    const { email, password } = this.state;
+
+    this.setState({ error: '', loading: true });
+
         //This autoregisters a new user, edit later to make it push to a seperate login
         firebase.auth().createUserWithEmailAndPassword(email, password)
           .then(this.onLoginSuccess.bind(this))
-          .catch(this.onLoginFail.bind(this));
-      });
-  }
+          .catch(this.onRegisterFail.bind(this));
+}
+
 
   //failed login
   onLoginFail() {
     this.setState({ error: 'Auth Failed, Pass > 6, try again',
+    loading: false });
+  }
+
+  //failed login
+  onRegisterFail() {
+    this.setState({ error: 'Resitration Failed, Password > 6',
     loading: false });
   }
 
@@ -41,16 +54,35 @@ class LoginForm extends Component {
     });
   }
 
-//handling showing user content, using state changes
-  renderButton() {
+  showLoad() {
     if (this.state.loading) {
-      return <Spinner size="small" />;
+      return <Spinner />;
+    }
+    return null;
+  }
+
+//handling showing user content, using state changes
+  renderLogin() {
+    if (this.state.loading) {
+      return null;
     }
 
     //else
     return (
-      <Button onPress={this.onButtonPress.bind(this)}>
+      <Button onPress={this.onLoginPress.bind(this)}>
         Log in
+      </Button>
+    );
+  }
+
+  renderRegister() {
+    if (this.state.loading) {
+          return null;
+        }
+    //else
+    return (
+      <Button onPress={this.onRegisterPress.bind(this)}>
+        Register
       </Button>
     );
   }
@@ -84,8 +116,11 @@ class LoginForm extends Component {
         </Text>
 
         <CardSection>
-          {this.renderButton()}
+          {this.renderRegister()}
+          {this.renderLogin()}
+          {this.showLoad()}
         </CardSection>
+
       </Card>
     );
   }
